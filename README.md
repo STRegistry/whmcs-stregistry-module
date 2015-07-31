@@ -1,5 +1,6 @@
 # ST Registry module for WHMCS
 ST Registry module for WHMCS which provide full functionality coverage for .ST domains management and based on communication with ST Registry through REST API.
+This module is based on PHP REST API Wrapper: https://github.com/STRegistry/restwrapper-php
 
 Instructions and application to become accrediter registrar can be found on page: www.registry.st/registrars/become-registrar
 
