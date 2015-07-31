@@ -15,6 +15,7 @@ Instructions and application to become accrediter registrar can be found on page
 * Configure module by providing REST API access credentials
 
 Access credentials for REST API can be found in your registrar console on page:
+
 <b>OT&E and Integration</b> > <b>Live/Production access</b>
 
 ## Start using module
@@ -25,9 +26,12 @@ Access credentials for REST API can be found in your registrar console on page:
 * Optionally you can enable <b>ID Protection</b> and <b>EPP Code</b> addon functionality
 
 ## Configure ID Protection addon (optional)
-It is possible to use pre-defined contacts for ID Protection on registry side OR dynamically generate new contacts for each domain. 
+It is possible to use pre-defined contacts for ID Protection on ST Registry side (previously created under your ST Registrar account) OR dynamically generate new contacts for each domain. 
 Functionality responsible for <b>WHOIS Privacy</b> contacts definition is located in file:
 <whmcs_root>/modules/registrars/stregistry/classes/STRegistryPrivacyContact.php
+
+Methods <b>getRegistrantId</b>, <b>getAdminId</b>, <b>getTechId</b>, <b>getBillingId</b> called by the module to obtain ID Protection contact id for corresponding domain contact.
+You are free to modify functionality of this class to use your external <b>WHOIS Privacy</b> service provider.
 
 By default used pre-defined Contact ID "STR-WHOISPRIVACY" for all domain contacts.
 
