@@ -20,7 +20,7 @@ Access credentials for REST API can be found in your registrar console on page:
 ## Start using module
 * Login to WHMCS admin panel.
 * Go to Setup > Products/Service > Domain pricing
-* Create ".st" TLD by selecting "Stregistry" module in "Auto Registration" field
+* Create ".st" TLD and selectg "Stregistry" module in "Auto Registration" field
 * Define your pricing for different registration/renewal terms
 * Optionally you can enable <b>ID Protection</b> and <b>EPP Code</b> addon functionality
 
