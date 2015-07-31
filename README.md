@@ -14,7 +14,7 @@ Instructions and application to become accrediter registrar can be found on page
 * Activate <b>ST Registry</b> module
 * Configure module by providing REST API access credentials
 
-Access credentials for REST API can be found in your registrar console on page:
+Access credentials for REST API can be found in your registrar console on page:<br/>
 <b>Registrar console</b> / <b>OT&E and Integration</b> > <b>Live/Production access</b>
 
 ## Start using module
