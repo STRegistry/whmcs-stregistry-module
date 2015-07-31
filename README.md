@@ -15,7 +15,7 @@ Instructions and application to become accrediter registrar can be found on page
 * Configure module by providing REST API access credentials
 
 Access credentials for REST API can be found in your registrar console on page:<br/>
-<b>Registrar console</b> / <b>OT&E and Integration</b> > <b>Live/Production access</b>
+<b>Registrar console</b> > <b>OT&E and Integration</b> > <b>Live/Production access</b>
 
 ## Start using module
 * Login to WHMCS admin panel.
