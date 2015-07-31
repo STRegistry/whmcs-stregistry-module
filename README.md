@@ -24,3 +24,7 @@ Access credentials for REST API can be found in your registrar console on page:
 * Define your pricing for different registration/renewal terms
 * Optionally you can enable <b>ID Protection</b> and <b>EPP Code</b> addon functionality
 
+## Configure ID Protection addon (optional)
+It is possible to use pre-defined contacts for ID Protection on registry side OR dynamically generate new contacts for each domain. Functionality responsible for <b>WHOIS Privacy</b> contacts definition is located in file <whmcs_root>/modules/registrars/stregistry/classes/STRegistryPrivacyContact.php
+By default used pre-defined Contact ID "STR-WHOISPRIVACY" for all domain contacts.
+
