@@ -20,7 +20,7 @@ class STRegistry
 	 * 
 	 * @var int
 	 */
-	private static $_apiPort = 80;
+	private static $_apiPort = 443;
 	
 	/**
 	 * STRegistry REST API version
