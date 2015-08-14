@@ -4,7 +4,7 @@ This module is based on PHP REST API Wrapper: https://github.com/STRegistry/rest
 
 Instructions and application to become accrediter registrar can be found on page: www.registry.st/registrars/become-registrar
 
-## Installtion Steps
+## Installation Steps
 * Download the modules directory or Git clone the modules directory to root directory of WHMCS installtion.
 * This should add module stregistry under <whmcs_root>/modules/registrars/ directory.
 
