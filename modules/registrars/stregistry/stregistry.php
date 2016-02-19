@@ -404,7 +404,7 @@ function stregistry_GetContactDetails($params)
 		} else {
 			$contact = $idCache[$contactId];
 		}
-
+		$addresses = $contact->getAddress();
 		$data = array(
 			'Phone Number' => $contact->getPhoneNumber(),
 			'Fax'          => $contact->getFaxNumber(),
@@ -412,9 +412,9 @@ function stregistry_GetContactDetails($params)
 			'Name'         => $contact->getName(),
 			'Organization' => $contact->getOrganization(),
 			'City'         => $contact->getCity(),
-			'Street1'      => $contact->getAddress()[0],
-			'Street2'      => $contact->getAddress()[1],
-			'Street3'      => $contact->getAddress()[2],
+			'Street1'      => $addresses[0],
+			'Street2'      => $addresses[1],
+			'Street3'      => $addresses[2],
 			'Postal Code'  => $contact->getPostalCode(),
 			'Country'      => $contact->getCountryCode(),
 			'State'        => $contact->getState(),
@@ -775,12 +775,8 @@ function stregistry_TransferSync($params)
 	if (($status = __initConnectionAndAuthorize($params)) !== true) {
 		return __errorArray($status);
 	}
-	// get domain authcode
-	if (($domainAuthCode = __getStoredDomainEppCode($params['domain'])) === false) {
-		return __errorArray('domain auth code not found in local DB');
-	}
 	// query transfer status
-	$json = STRegistry::Domains()->transferQuery($params['domain'], $domainAuthCode);
+	$json = STRegistry::Domains()->transferQuery($params['domain']);
 	if (!ResponseHelper::isSuccess($json)) {
 		return __errorArray(ResponseHelper::fromJSON($json)->message);
 	}
@@ -795,6 +791,24 @@ function stregistry_TransferSync($params)
 		case 'serverApproved':
 			$return['completed']   = true;
 			$return['expirydate'] = date('Y-m-d', is_numeric($transferData['exDate']) ? $transferData['exDate'] : strtotime($transferData['exDate']));
+			$json = STRegistry::Domains()->query($params['domain']);
+			$domain = Domain::fromJSON($json);
+			if (in_array(DOMAIN::STATUS_UPDATE_PROHIBITED, $domain->getStatuses())) {
+				$domain->removeStatus(DOMAIN::STATUS_UPDATE_PROHIBITED);
+				STRegistry::Domains()->update($domain);
+			}
+			if ($params['idprotection']) {
+				$domain->setPrivacyContacts(STRegistryPrivacyContact::getRegistrantId(), STRegistryPrivacyContact::getAdminId(), STRegistryPrivacyContact::getTechId(), STRegistryPrivacyContact::getBillingId());
+				$json = STRegistry::Domains()->update($domain);
+				if (!ResponseHelper::isSuccess($json)) {
+					//We got abnormal situation in transfer process which has to be reported
+					$return['failed'] = true;
+					$return['reason'] = 'Failed to complete transfer while trying to enable ID Protection. Reason: ' . ResponseHelper::fromJSON($json)->message;
+					unset($return['completed']);
+				}
+			} else {
+				STRegistry::Domains()->removePrivacy($params['domain']);
+			}
 		break;
 		case 'clientRejected':
 		case 'clientCancelled':

@@ -130,8 +130,9 @@ class Contacts extends Model
 				Contact::POSTALINFO_INT   => $contact->getPostalInfo(Contact::POSTALINFO_INT),
 			),
 		);
-		if (!empty($contact->getPostalInfo(Contact::POSTALINFO_LOCAL)['name'])) {
-			$data['postalInfo'][Contact::POSTALINFO_LOCAL] = $contact->getPostalInfo(Contact::POSTALINFO_LOCAL);
+		$localInfo = $contact->getPostalInfo(Contact::POSTALINFO_LOCAL);
+		if (!empty($localInfo['name'])) {
+			$data['postalInfo'][Contact::POSTALINFO_LOCAL] = $localInfo;
 		}
 		return $data;
 	}
@@ -148,8 +149,9 @@ class Contacts extends Model
 				),
 			),
 		);
-		if (!empty($contact->getPostalInfo(Contact::POSTALINFO_LOCAL)['name'])) {
-			$data['chg']['postalInfo'][Contact::POSTALINFO_LOCAL] = $contact->getPostalInfo(Contact::POSTALINFO_LOCAL);
+		$localInfo = $contact->getPostalInfo(Contact::POSTALINFO_LOCAL);
+		if (!empty($localInfo['name'])) {
+			$data['chg']['postalInfo'][Contact::POSTALINFO_LOCAL] = $localInfo;
 		}
 
 		return $data;
