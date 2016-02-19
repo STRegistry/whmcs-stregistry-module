@@ -24,6 +24,18 @@ function __initConnectionAndAuthorize($params)
 }
 
 /**
+ * check if domain is handled by ST Registry
+ * 
+ * return boolean
+ */
+function __checkSTTLD($domain) 
+{
+    $domain = explode(".", strtolower($domain));
+
+    return array_pop($domain) == 'st';
+}
+
+/**
  * query registrar module config from whmcs db
  * 
  * @return array wmhcs module config
@@ -86,39 +98,8 @@ function __getDomainRegistrationPrice($tld, $period, $currency)
             WHERE `p`.`type` = 'domainregister' AND `p`.`currency` = '%s' AND `d`.`extension` = '%s'", $periods[$period], $currency, $tld);
 
     $res = mysql_query($sql);
-    return mysql_fetch_assoc($res)[$periods[$period]] ?: false;
-}
-
-
-/**
- * inserts domain auth code to whmcs database for next querying operations
- * 
- * @param str $domainName
- * @param str $authCode
- * 
- * @return boolean indicates if query was successfull or not
- */
-function __storeDomainEppCode($domainName, $authCode)
-{
-    $sql = sprintf("REPLACE INTO `st_epps` (`domain`, `epp`) VALUES ('%s', '%s')", mysql_real_escape_string($domainName), mysql_real_escape_string(encrypt($authCode)));
-    $res = mysql_query($sql);
-
-    return is_resource($res);
-}
-
-/**
- * return previously stored domain epp code 
- * 
- * @param str $domainName
- * 
- * @return mixed epp code if exists false otherwise
- */
-function __getStoredDomainEppCode($domainName)
-{
-	$sql = sprintf("SELECT `epp` FROM `st_epps` WHERE `domain` = '%s'", mysql_real_escape_string($domainName));
-	$res = mysql_query($sql);
-
-	return decrypt(@mysql_fetch_assoc($res)['epp']) ?: false;
+    $row = mysql_fetch_assoc($res);
+    return $row[$periods[$period]] ?: false;
 }
 
 /**
@@ -182,4 +163,23 @@ function __markWHMCSDomainCancelled($whmcsDomainId)
 	$res = mysql_query($sql);
 
 	return is_resource($res);
+}
+
+
+/**
+ * Check if ID Protection enabled.
+ * Since in WHMCS v5.x id protection flag was identified as "on" and in WHMCS v6.x identified as (int) 1 - to keep
+ * compatibility between both WHMCS versions we need to check both formats
+ *
+ * @param mixed $idprotection
+ *
+ * @return boolean
+ */
+function __isIDProtectionEnabled($idprotection)
+{
+    if ($idprotection=='on' || $idprotection==1) {
+        return true;
+    } else {
+        return false;
+    }
 }

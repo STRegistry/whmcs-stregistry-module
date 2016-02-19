@@ -13,6 +13,10 @@ function hook_stregistrar_ShoppingCartValidateDomainsConfig ($params)
 {
     $errors = array();
     foreach ($_SESSION['cart']['domains'] as $key => $domain) {
+        // check tld
+        if (!__checkSTTLD()) {
+            continue;
+        }
         // check premium domain registration
         if ($domain['type'] == 'register') {
             $config = __getSTRegistrarModuleConfig();
@@ -42,10 +46,6 @@ function hook_stregistrar_ShoppingCartValidateDomainsConfig ($params)
                 $errors[] = sprintf('Domain %s is not eligible for transfer. Please contact current domain registrar for assistance', $domain['domain']);   
             }
         }
-        if (!count($errors)) {
-            __storeDomainEppCode($domain['domain'], $domain['eppcode']);
-        }
-        
     }
 
     return count($errors) ? $errors : '';
@@ -114,6 +114,14 @@ function hook_stregistrar_ClientAreaHeaderOutput($params) {
 add_hook('OrderDomainPricingOverride', 1, 'hook_stregistrar_OrderDomainPricingOverride');
 function hook_stregistrar_OrderDomainPricingOverride($params) 
 {
+    if (!__checkSTTLD($params['domain'])) {
+        return false;
+    }
+
+    if ($params['type']!='register') {
+        return false;
+    }
+
     $domain  = explode('.', $params['domain']);
     $sld     = $domain[0];
     $tld     = '.' . $domain[1];
@@ -129,17 +137,21 @@ function hook_stregistrar_OrderDomainPricingOverride($params)
 
     $currency = getCurrency($_SESSION['uid']);
     if (($regularPrice = __getDomainRegistrationPrice($tld, $params['regperiod'], $currency['id'])) === false) {
-        die();
         return false;
     }
-    $total = $regularPrice + $premiumFee * $currency['rate'];
+
+    if($premiumFee>0) {
+        $total = $regularPrice + $premiumFee * $currency['rate'];
+    } else {
+        return false;
+    }
 
     ob_clean();
     return $total;
 }
 
 /**
- * cronjob hook for transfer syncrinization
+ * cronjob hook for transfer synchronisation
  * 
  * @param array $param whmcs data
  * 
