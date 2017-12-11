@@ -45,7 +45,7 @@
                         <input type="hidden" name="id" value="{$domainid}">
                         <input type="hidden" name="canceldomain" value="on">
                             <input type="hidden" name="autorenew" value="disable">
-                            <p><input id="submit" type="submit" class="btn btn-large btn-danger" value="{$LANG.stcanselbtn}" /></p>
+                            <p><input id="submit" type="submit" class="btn btn-large btn-danger" value="{$LANG.stcancelbtn}" /></p>
                     </form>
                 </div>
                 <br />
