@@ -13,7 +13,13 @@ function __initConnectionAndAuthorize($params)
         require_once sprintf('%s%2$sclasses%2$swrapper%2$sResponseHelper.php', dirname(__FILE__), DIRECTORY_SEPARATOR);
         require_once sprintf('%s%2$sclasses%2$sSTRegistryPrivacyContact.php', dirname(__FILE__), DIRECTORY_SEPARATOR);
     }
-	STRegistry::Init($params['apiHost'], $params['apiHost'], $params['apiUseSSL'] === 'on', $params['apiVersion'] ?: '1.0', $params['apiUserAgent']);
+	STRegistry::Init(
+	    $params['apiHost'],
+        $params['apiHost'],
+        $params['apiUseSSL'] === 'on',
+        $params['apiVersion'] ?: '1.0',
+        $params['apiUserAgent'] ?: 'WHMCS-MODULE'
+    );
 
 	$json = STRegistry::Session()->login($params['apiUsername'], $params['apiPassword']);
 	if (!ResponseHelper::isSuccess($json)) {

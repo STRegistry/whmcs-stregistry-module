@@ -406,18 +406,18 @@ function stregistry_GetContactDetails($params)
 		}
 		$addresses = $contact->getAddress();
 		$data = array(
-			'Phone Number' => $contact->getPhoneNumber(),
-			'Fax'          => $contact->getFaxNumber(),
-			'Email'        => $contact->getEmail(),
 			'Name'         => $contact->getName(),
+			'Email'        => $contact->getEmail(),
 			'Organization' => $contact->getOrganization(),
+			'Country'      => $contact->getCountryCode(),
 			'City'         => $contact->getCity(),
+			'State'        => $contact->getState(),
+			'Postal Code'  => $contact->getPostalCode(),
 			'Street1'      => $addresses[0],
 			'Street2'      => $addresses[1],
 			'Street3'      => $addresses[2],
-			'Postal Code'  => $contact->getPostalCode(),
-			'Country'      => $contact->getCountryCode(),
-			'State'        => $contact->getState(),
+			'Phone Number' => $contact->getPhoneNumber(),
+			'Fax'          => $contact->getFaxNumber(),
 		);
 
 		$contacts[$mapping[$type]] = $data;
