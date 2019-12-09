@@ -14,7 +14,7 @@ function hook_stregistrar_ShoppingCartValidateDomainsConfig ($params)
     $errors = array();
     foreach ($_SESSION['cart']['domains'] as $key => $domain) {
         // check tld
-        if (!__checkSTTLD()) {
+        if (!__checkSTTLD($domain)) {
             continue;
         }
         // check premium domain registration
@@ -164,8 +164,8 @@ function hook_stregistrar_DailyCronJob($params)
 }
 
 function hook_stregistrar_ClientAreaHeadOutput($vars) {
-    
-    
+
+
      $script = '<script>';
 
     if (($vars['filename'] == 'domainchecker' || ($vars['filename'] == 'cart' && isset($_GET['a']) && $_GET['a'] == 'view')) && (is_null($_REQUEST['ajax']) || $_REQUEST['ajax'] != 1 )) {
