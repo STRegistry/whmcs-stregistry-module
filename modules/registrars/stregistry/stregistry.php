@@ -518,25 +518,26 @@ function stregistry_GetEPPCode($params)
  * 
  * @param array $params whmcs data
  * 
- * @return mixed array containig error message will return if error was ocurred, 'success' string in other case
+ * @return mixed array containig error message will return if error was occurred, 'success' string in other case
  */
 function stregistry_RegisterNameserver($params)
 {
-    // init connection
 	if (($status = __initConnectionAndAuthorize($params)) !== true) {
 		return __errorArray($status);
 	}
-
-	// create host
-	$host = new Host($params['nameserver']);
-	if (!empty($params['ipaddress'])) {
-		$host->addIP($params['ipaddress'], CommonFunctions::detectIPType($params['ipaddress']));
-	}
-
-	$json = STRegistry::Hosts()->create($host);
-	if (!ResponseHelper::isSuccess($json)) {
-		return __errorArray(ResponseHelper::fromJSON($json)->message);
-	}
+	try {
+        $host = new Host($params['nameserver']);
+        if ($params['ipaddress'] !== filter_var($params['ipaddress'], FILTER_VALIDATE_IP)) {
+            throw new RuntimeException('Nameserver IP should be valid IPv4/IPv6 address');
+        }
+        $host->addIP($params['ipaddress'], CommonFunctions::detectIPType($params['ipaddress']));
+        $json = STRegistry::Hosts()->create($host);
+        if (!ResponseHelper::isSuccess($json)) {
+            throw new RuntimeException(ResponseHelper::fromJSON($json)->message);
+	    }
+    } catch (RuntimeException $exception) {
+        return __errorArray($exception->getMessage());
+    }
 
 	return 'success';
 }
