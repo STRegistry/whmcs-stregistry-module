@@ -607,19 +607,6 @@ function stregistry_DeleteNameserver($params)
 }
 
 /**
- * add custom button to domain managment page 
- * add Cancel domain button
- * 
- * @return array custom buttons
- */
-function stregistry_ClientAreaCustomButtonArray() {
-    $buttonarray = array(
-        "Cancel Domain"      => "CancelDomain",
-    );
-    return $buttonarray;
-}
-
-/**
  * add custom buttons in admin domain page
  * add hold domain button
  * add unhold domin button
@@ -694,46 +681,6 @@ function stregistry_UnHoldDomain($params)
 }
 
 /**
- * make request to cancel domain registration
- * 
- * @param array $params whmcs data
- * 
- * @return array custom action data 
- */
-function stregistry_CancelDomain($params) 
-{
-	$actionData = array(
-		'templatefile' => 'domaincancel',
-        'breadcrumb'   => array(
-        	sprintf('clientarea.php?action=domaindetails&domainid=%s&modop=custom&a=push', $domainid) => 'Cancel Domain'
-        ),
-        'vars' => array(
-			'title' => sprintf('Managing Domain: %s', $params['domainname']),
-        ),
-	);
-	if ($_POST['canceldomain'] == 'on') {
-		// init connection
-		if (($status = __initConnectionAndAuthorize($params)) !== true) {
-			$actionData['vars']['registrarcustombuttonresult'] = $status;
-			return $actionData;
-		}
-		// delete domain
-		$json = STRegistry::Domains()->delete($params['domainname']);
-		if (!ResponseHelper::isSuccess($json)) {
-			$actionData['vars']['registrarcustombuttonresult'] = ResponseHelper::fromJSON($json)->message;
-			return $actionData;
-		}
-		__markWHMCSDomainCancelled($params['domainid']);
-
-		$whmcsConfig = __getWHMCSConfig();
-		header(sprintf('Location: %s/clientarea.php?action=domaindetails&id=%d', $whmcsConfig['SystemSSLURL'] ?: $whmcsConfig['SystemURL'], $params['domainid'])); exit;
-	}
-
-
-	return $actionData;
-}
-
-/**
  * make domain udpate request to set/remove privacy contacts
  * 
  * @param array $params whmcs data
@@ -759,7 +706,6 @@ function stregistry_IDProtectToggle($params)
 	
 	return 'success';
 }
-
 
 // sync functions
 
