@@ -360,7 +360,7 @@ function stregistry_RenewDomain($params) {
 		return __errorArray(ResponseHelper::fromJSON($json)->message);
 	}
 	
-	return $values;
+	return 'success';
 }
 
 /**
