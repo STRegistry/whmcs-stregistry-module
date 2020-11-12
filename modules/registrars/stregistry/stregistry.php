@@ -723,7 +723,7 @@ function stregistry_TransferSync($params)
 		return __errorArray($status);
 	}
 	// query transfer status
-	$json = STRegistry::Domains()->transferQuery($params['domain']);
+	$json = STRegistry::Domains()->transferQuery($params['domain'], null);
 	if (!ResponseHelper::isSuccess($json)) {
 		return __errorArray(ResponseHelper::fromJSON($json)->message);
 	}
