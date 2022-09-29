@@ -15,8 +15,8 @@ function __initConnectionAndAuthorize($params)
     }
 	STRegistry::Init(
 	    $params['apiHost'],
-        $params['apiHost'],
-        $params['apiUseSSL'] === 'on',
+        $params['apiPort'],
+        $params['apiUseSSL'],
         $params['apiVersion'] ?: '1.0',
         $params['apiUserAgent'] ?: 'WHMCS-MODULE'
     );

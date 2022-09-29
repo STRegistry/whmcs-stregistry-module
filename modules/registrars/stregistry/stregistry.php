@@ -89,8 +89,8 @@ function stregistry_getConfigArray() {
 	                    "apiUsername" : button.parents("tbody").find("input[name=apiUsername]").val(),
                         "apiPassword" : button.parents("tbody").find("input[name=apiPassword]").val(),
                         "apiHost" : button.parents("tbody").find("input[name=apiHost]").val(),
-                        "apiPort" : button.parents("tbody").find("input[name=apiPost]").val(),
-                        "apiUseSSL" : button.parents("#stregistryconfig").find("input[name=testMode]").attr("checked") ? "on" : ""
+                        "apiPort" : button.parents("tbody").find("input[name=apiPort]").val(),
+                        "apiUseSSL" : button.parents("tbody").find("input[type=checkbox][name=apiUseSSL]").prop("checked") ? "on" : ""
 	                }, function(data){
 	                    if(data == "success"){
 	                        button.parent().find("span.result_con").html("<span style=\"color:green;font-weight:bold\"> Connection success<span>");
@@ -117,7 +117,9 @@ if(isset($_POST['st_action'])) {
         'apiHost' => $_POST['apiHost'],
         'apiPort' => $_POST['apiPort'],
         'apiUseSSL' => $_POST['apiUseSSL'],
-    );
+		'apiVersion' => '1.0',
+		'apiUserAgent' => 'WHMCS-MODULE'
+	);
     if (($status = __initConnectionAndAuthorize($params)) !== true) {
 		die($status);
 	}
