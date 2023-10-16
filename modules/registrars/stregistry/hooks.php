@@ -9,7 +9,7 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'common_functions.php';
  * @return mixed array will be returned in case of some errors occured, empty string in other cases
  */
 add_hook('ShoppingCartValidateDomainsConfig', 1, 'hook_stregistrar_ShoppingCartValidateDomainsConfig');
-function hook_stregistrar_ShoppingCartValidateDomainsConfig ($params) 
+function hook_stregistrar_ShoppingCartValidateDomainsConfig($params)
 {
     $errors = array();
     foreach ($_SESSION['cart']['domains'] as $key => $domain) {
@@ -22,10 +22,10 @@ function hook_stregistrar_ShoppingCartValidateDomainsConfig ($params)
             $config = __getSTRegistrarModuleConfig();
             if (__domainIsPremium($domain['domain']) && $config['allowPremium'] !== 'on') {
                 return $errors[] = "Registration of premium domains is disabled by server configuration";
-            }    
+            }
         }
-        
-        if($domain['type'] == 'transfer') {
+
+        if ($domain['type'] == 'transfer') {
             // init api connection
             if (($status = __initConnectionAndAuthorize(__getSTRegistrarModuleConfig())) === false) {
                 return $errors[] = $status;
@@ -43,7 +43,7 @@ function hook_stregistrar_ShoppingCartValidateDomainsConfig ($params)
             $domainObj = Domain::fromJSON($json);
             // check status prohibitions
             if (in_array(Domain::STATUS_TRANSFER_PROHIBITED, $domainObj->getStatuses()) || in_array('serverTransferProhibited', $domainObj->getStatuses())) {
-                $errors[] = sprintf('Domain %s is not eligible for transfer. Please contact current domain registrar for assistance', $domain['domain']);   
+                $errors[] = sprintf('Domain %s is not eligible for transfer. Please contact current domain registrar for assistance', $domain['domain']);
             }
         }
     }
@@ -60,11 +60,11 @@ function hook_stregistrar_ShoppingCartValidateDomainsConfig ($params)
  * @return mixed errors array will be returned if some error ocuured
  */
 add_hook('ClientAreaHeaderOutput', 1, 'hook_stregistrar_ClientAreaHeaderOutput');
-function hook_stregistrar_ClientAreaHeaderOutput($params) {
-    
+function hook_stregistrar_ClientAreaHeaderOutput($params)
+{
+
     $errors = array();
-    if($params['clientareaaction'] == 'domainregisterns')
-    {   
+    if ($params['clientareaaction'] == 'domainregisterns') {
         global $smarty;
         global $db_host;
 
@@ -72,11 +72,11 @@ function hook_stregistrar_ClientAreaHeaderOutput($params) {
             return $errors[] = $status;
         }
         $filter = new SearchCriteria();
-        $filter->name->like("%.". $params['domain']);
+        $filter->name->like("%." . $params['domain']);
 
         $json = STRegistry::Hosts()->search($filter, 30);
         if (!ResponseHelper::isSuccess($json)) {
-            return $errors[] = ResponseHelper::fromJSON($json)->message;   
+            return $errors[] = ResponseHelper::fromJSON($json)->message;
         }
         $hosts = ResponseHelper::fromJSON($json, 'searchRes')->result;
         $gluerecords = array();
@@ -89,8 +89,8 @@ function hook_stregistrar_ClientAreaHeaderOutput($params) {
 
                     $gluerecords[] = array(
                         'hostname' => $host['name'],
-                        'address'  => $addr,
-                        'type'     => $type == Host::IP_VERSION_4 ? 'IPv4' : 'IPv6',
+                        'address' => $addr,
+                        'type' => $type == Host::IP_VERSION_4 ? 'IPv4' : 'IPv6',
                     );
                 }
             } else {
@@ -99,8 +99,8 @@ function hook_stregistrar_ClientAreaHeaderOutput($params) {
                 );
             }
         }
-        $smarty->assign('module', "stregistry");        
-        $smarty->assign('gluerecords', $gluerecords);        
+        $smarty->assign('module', "stregistry");
+        $smarty->assign('gluerecords', $gluerecords);
     }
 }
 
@@ -112,21 +112,21 @@ function hook_stregistrar_ClientAreaHeaderOutput($params) {
  * @return float
  */
 add_hook('OrderDomainPricingOverride', 1, 'hook_stregistrar_OrderDomainPricingOverride');
-function hook_stregistrar_OrderDomainPricingOverride($params) 
+function hook_stregistrar_OrderDomainPricingOverride($params)
 {
     if (!__checkSTTLD($params['domain'])) {
         return false;
     }
 
-    if ($params['type']!='register') {
+    if ($params['type'] != 'register') {
         return false;
     }
 
-    $domain  = explode('.', $params['domain']);
-    $sld     = $domain[0];
-    $tld     = '.' . $domain[1];
+    $domain = explode('.', $params['domain']);
+    $sld = $domain[0];
+    $tld = '.' . $domain[1];
 
-    $config     = __getSTRegistrarModuleConfig();
+    $config = __getSTRegistrarModuleConfig();
     $premiumFee = 0;
 
     if (strlen($sld) == 2) {
@@ -140,7 +140,7 @@ function hook_stregistrar_OrderDomainPricingOverride($params)
         return false;
     }
 
-    if($premiumFee>0) {
+    if ($premiumFee > 0) {
         $total = $regularPrice + $premiumFee * $currency['rate'];
     } else {
         return false;
@@ -163,18 +163,19 @@ function hook_stregistrar_DailyCronJob($params)
     return;
 }
 
-function hook_stregistrar_ClientAreaHeadOutput($vars) {
+function hook_stregistrar_ClientAreaHeadOutput($vars)
+{
 
 
-     $script = '<script>';
+    $script = '<script>';
 
-    if (($vars['filename'] == 'domainchecker' || ($vars['filename'] == 'cart' && isset($_GET['a']) && $_GET['a'] == 'view')) && (is_null($_REQUEST['ajax']) || $_REQUEST['ajax'] != 1 )) {
+    if (($vars['filename'] == 'domainchecker' || ($vars['filename'] == 'cart' && isset($_GET['a']) && $_GET['a'] == 'view')) && (is_null($_REQUEST['ajax']) || $_REQUEST['ajax'] != 1)) {
         $script .= 'jQuery(function() {
                 ';
 
         $script .= 'jQuery(document).ready(function(){'
-          . 'jQuery("table.cart tr.carttableproduct strike").remove();'
-          . '});';
+            . 'jQuery("table.cart tr.carttableproduct strike").remove();'
+            . '});';
 
         $script .= '
                 });';
