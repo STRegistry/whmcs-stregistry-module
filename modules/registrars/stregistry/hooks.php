@@ -14,7 +14,7 @@ function hook_stregistrar_ShoppingCartValidateDomainsConfig($params)
     $errors = array();
     foreach ($_SESSION['cart']['domains'] as $key => $domain) {
         // check tld
-        if (!__checkSTTLD($domain)) {
+        if (!__checkSTTLD($domain['domain'])) {
             continue;
         }
         // check premium domain registration
